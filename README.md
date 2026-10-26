@@ -14,6 +14,8 @@ Fixed an issue where the Half-Life 2 HUD flashlight icon displayed as a **large 
 
 令人意外的简单！
 
+**以下方法任选其一**
+
 **注意：修改后如果使用了“验证游戏完整性”则一切修改会复原！**
 
 ### 1. 修改 `fontinfo.kv` 文件
