@@ -326,3 +326,15 @@ GetGlyphOutlineA  ->  GetGlyphOutlineW
 Windows 加载器就会把 IAT 槽绑定到 `gdi32!GetGlyphOutlineW`，
 `vguimatsurface.dll` 里两处 `call [0x100D502C]` 自动变成 Unicode 调用。
 这是**一个字节**的改动（再把 2 字节 hint 更新一下），文件大小不变。
+
+Steam 指南：
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3827608179
+
+Japanese：
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3827612104
+
+Korean：
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3827616417
