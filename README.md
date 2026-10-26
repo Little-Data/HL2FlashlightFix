@@ -14,9 +14,9 @@ Fixed an issue where the Half-Life 2 HUD flashlight icon displayed as a **large 
 
 令人意外的简单！
 
-**以下方法任选其一**
-
 **注意：修改后如果使用了“验证游戏完整性”则一切修改会复原！**
+
+**以下方法任选其一**
 
 ### 1. 修改 `fontinfo.kv` 文件
 
@@ -109,6 +109,45 @@ patch_vguimatsurface.py apply --dll "D:\...\123\321\vguimatsurface.dll"
 
 按 `F` 开手电筒时，HUD 左下角本应显示手电筒图标，实际显示成一个**大向下箭头**。
 只在中文/日文/韩文等 DBCS 代码页的 Windows 上出现；英文 Windows 正常。
+
+## 为什么无法做成创意工坊模组
+
+`vguimatsurface.dll` 读取的是：
+
+```
+resource/FontInfo.kv，pathID = "PLATFORM"
+```
+
+对应 `CFontManager::Init` 里的 `KeyValues::LoadFromFile(fs, "resource/FontInfo.kv", "PLATFORM")`
+
+Source 文件系统在 `Open(path, pathID)` 时，只会遍历 pathID 匹配的搜索路径，并且**按加入顺序从 index 0 开始，返回第一个命中的文件**。
+
+启动器先加原生平台路径：
+
+```cpp
+// launcher.cpp
+fsInfo.m_pFileSystem->AddSearchPath( "platform", "PLATFORM" );
+```
+
+然后引擎才加载 mod 的 `gameinfo.txt` SearchPaths；而 gameinfo 里的路径一律是：
+
+```cpp
+// public/filesystem_init.cpp
+FileSystem_AddLoadedSearchPath(...);
+      -> AddSearchPath( fullLocationPath, pPathID, PATH_ADD_TO_TAIL );
+```
+
+→ 原生 `platform` 在 index 0，mod 的 `platform` 路径排在后面。
+
+所以即使 mod 的 `gameinfo.txt` 写：
+
+```
+platform |gameinfo_path|.
+```
+
+mod 里的 `resource/fontinfo.kv` 也会被原生 `platform/resource/fontinfo.kv` 遮住，**不会生效**。
+
+mod 自己的 `resource/` 属于 `GAME`/`MOD` pathID，更不会被 `PLATFORM` 查找看到。
 
 ## 游戏到底请求了哪两个字符
 
